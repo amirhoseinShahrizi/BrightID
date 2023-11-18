@@ -94,30 +94,30 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
   // show node error modal
   useEffect(() => {
     if (nodeError) {
-      Alert.alert(
-        'Node error!',
-        'Current node seems not to be functional',
-        [
-          {
-            text: 'Switch to different node',
-            onPress: () => {
-              dispatch(leaveAllChannels());
-              dispatch(removeCurrentNodeUrl());
-              setNodeError(false);
-            },
-          },
-          {
-            text: 'Ignore',
-            style: 'cancel',
-            onPress: () => {
-              setNodeError(false);
-            },
-          },
-        ],
-        {
-          cancelable: true,
-        },
-      );
+      // Alert.alert(
+      //   'Node error!',
+      //   'Current node seems not to be functional',
+      //   [
+      //     {
+      //       text: 'Switch to different node',
+      //       onPress: () => {
+      //         dispatch(leaveAllChannels());
+      //         dispatch(removeCurrentNodeUrl());
+      //         setNodeError(false);
+      //       },
+      //     },
+      //     {
+      //       text: 'Ignore',
+      //       style: 'cancel',
+      //       onPress: () => {
+      //         setNodeError(false);
+      //       },
+      //     },
+      //   ],
+      //   {
+      //     cancelable: true,
+      //   },
+      // );
     }
   }, [dispatch, nodeError]);
 

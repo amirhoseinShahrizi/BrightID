@@ -11,7 +11,7 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { HeaderShownContext, useHeaderHeight } from '@react-navigation/elements';
 import { useTranslation } from 'react-i18next';
 import codePush from 'react-native-code-push';
 import { SvgXml } from 'react-native-svg';
@@ -20,8 +20,9 @@ import {
   setEditProfileMenuLayout,
   setEditProfileTextLayout,
 } from '@/reducer/walkthroughSlice';
-import HomeScreen from '@/components/HomeScreen';
-import { BLACK, ORANGE, WHITE, GREY } from '@/theme/colors';
+// import HomeScreen from '@/components/HomeScreen';
+import HomeScreen from '@/components/HomeScreenRedesigned';
+import { BLACK, ORANGE, WHITE, GREY, PRIMARY, GRAY9, GRAY2, DRAWER_BACKGROUND, GRAY10, DRAWER_BLURED_BACKGROUND } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 import { DEVICE_LARGE, DEVICE_IOS } from '@/utils/deviceConstants';
 import { retrieveImage, photoDirectory } from '@/utils/filesystem';
@@ -32,8 +33,8 @@ import List from '@/components/Icons/List';
 import GraphQl from '@/components/Icons/GraphQl';
 import Faq from '@/components/Icons/Faq';
 import Mail from '@/components/Icons/Mail';
-import FindFriendsScreen from '@/components/FindFriends/FindFriendsScreen';
 import Devices from '@/components/Icons/Devices';
+import FindFriendsScreen from '@/components/FindFriends/FindFriendsScreen';
 import TasksScreen from '@/components/Tasks/TasksScreen';
 import BituVerificationScreen from '@/components/Tasks/BituVerificationScreen';
 import GraphExplorerScreen from '@/components/SideMenu/GraphExplorerScreen';
@@ -44,16 +45,22 @@ import GroupsDrawerIcon from '@/static/groups_drawer.svg';
 import FindFriendsIcon from '@/static/findfriends_drawer.svg';
 import { SettingsScreen } from '@/components/SideMenu/SettingsScreen';
 import AppSettings from '@/components/Icons/AppSettings';
+import HomeIcon from '@/components/Icons/drawer/HomeIcon';
+import EditProfileIcon from '@/components/Icons/drawer/EditProfileIcon';
+import RecoveryConnectionsIcon from '@/components/Icons/drawer/RecoverConnectionsIcon';
+import AchievementsIcon from '@/components/Icons/drawer/AchievementsIcon';
+import GroupsIcon from '@/components/Icons/drawer/GroupsIcon';
+import ExplorerIcon from '@/components/Icons/drawer/ExplorerIcon';
+import SettingsIcon from '@/components/Icons/drawer/SettingsIcon';
+import ContactUsIcon from '@/components/Icons/drawer/ContactUsIcon';
+import TutorialIcon from '@/components/Icons/drawer/TutorialIcon';
+import { BrightIdLogo, HdrLeft, NotificationBell } from '@/components/Header/Header';
 
 const CustomItem = ({
   onPress,
   label,
   icon: Icon,
   focused,
-  inactiveTintColor,
-  activeTintColor,
-  activeBackgroundColor,
-  inactiveBackgroundColor,
   testId,
 }) => {
   const dispatch = useDispatch();
@@ -65,8 +72,8 @@ const CustomItem = ({
         styles.drawerItem,
         {
           backgroundColor: focused
-            ? activeBackgroundColor
-            : inactiveBackgroundColor,
+            ? WHITE
+            : 'transparent',
         },
       ]}
       onPress={onPress}
@@ -77,12 +84,12 @@ const CustomItem = ({
         }
       }}
     >
-      <Icon focused={focused} />
+      <Icon  color={focused ? PRIMARY : GRAY9} width={20} height={20}/>
       <Text
         style={[
           styles.labelStyle,
           {
-            color: focused ? activeTintColor : inactiveTintColor,
+            color: focused ? PRIMARY : GRAY9,
           },
         ]}
         onLayout={(e) => {
@@ -108,6 +115,8 @@ const CustomDrawerContent = (props) => {
   const { t } = useTranslation();
 
   retrieveImage(photoFilename).then(setProfilePhoto);
+  // React.useLayoutEffect(() => {}, [navigation])
+
 
   // prevent console error and blank photo
   const profileSource = profilePhoto
@@ -130,125 +139,88 @@ const CustomDrawerContent = (props) => {
       </View>
       <CustomItem
         testId="drawerHomeBtn"
-        focused={false}
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
+        focused={state.routeNames[state.index] === 'HomeScreen'}
         label={t('drawer.label.home')}
-        icon={({ focused }) => (
-          <Home
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={HomeIcon}
         onPress={() => {
           navigation.navigate('HomeScreen');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Home</Text>}
+          })
         }}
       />
       <CustomItem
         testId="drawerEditProfileBtn"
         focused={state.routeNames[state.index] === 'Edit Profile'}
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label={t('drawer.label.editProfile')}
-        icon={({ focused }) => (
-          <Pencil
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={EditProfileIcon}
         onPress={() => {
           navigation.navigate('Edit Profile');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Edit Profile</Text>},
+            headerStyle: {
+              // height: DEVICE_LARGE ? 80 : 70,
+              height: 52,
+              shadowRadius: 0,
+              elevation: -1,
+              zIndex: 0,
+            },
+            
+          })
         }}
       />
       <CustomItem
         testId="drawerRecoveryConnectionsBtn"
         focused={state.routeNames[state.index] === 'Recovery Connections'}
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label="Recovery Connections"
-        icon={({ focused }) => (
-          <RecoveryAccount
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={RecoveryConnectionsIcon}
         onPress={() => {
           navigation.navigate('Recovery Connections');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Recovery Connections</Text>}
+          })
         }}
       />
       <CustomItem
         testId="drawerAchievementsBtn"
         focused={state.routeNames[state.index] === 'Achievements'}
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label={t('drawer.label.achievements')}
-        icon={({ focused }) => (
-          <List
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={AchievementsIcon}
         onPress={() => {
           navigation.navigate('Achievements');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Achievements</Text>}
+          })
+        }}
+      />
+
+      <CustomItem
+        focused={false}
+        testId="groupsBtn"
+        label={t('drawer.label.groups')}
+        icon={GroupsIcon}
+        onPress={() => {
+          navigation.navigate('Groups');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Groups</Text>}
+          })
         }}
       />
 
       <CustomItem
         testId="drawerExplorerCodeBtn"
         focused={state.routeNames[state.index] === 'Copy Explorer Code'}
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label={t('drawer.label.copyExplorerCode')}
-        icon={({ focused }) => (
-          <GraphQl
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={ExplorerIcon}
         onPress={() => {
           navigation.navigate('Copy Explorer Code');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Explorer Code</Text>}
+          })
         }}
       />
-      <CustomItem
-        focused={false}
-        testId="groupsBtn"
-        inactiveTintColor={BLACK}
-        inactiveBackgroundColor={WHITE}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
-        label={t('drawer.label.groups')}
-        icon={() => (
-          <SvgXml
-            xml={GroupsDrawerIcon}
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-          />
-        )}
-        onPress={() => {
-          navigation.navigate('Groups');
-        }}
-      />
-      <CustomItem
+
+      {/* <CustomItem
         focused={false}
         testId="findFriendsBtn"
         inactiveTintColor={BLACK}
@@ -266,9 +238,9 @@ const CustomDrawerContent = (props) => {
         onPress={() => {
           navigation.navigate('FindFriendsScreen');
         }}
-      />
+      /> */}
 
-      <CustomItem
+      {/* <CustomItem
         focused={false}
         testId="devicesBtn"
         inactiveTintColor={BLACK}
@@ -287,28 +259,21 @@ const CustomDrawerContent = (props) => {
         onPress={() => {
           navigation.navigate('Devices', { syncing: false, asScanner: false });
         }}
-      />
+      /> */}
 
       <CustomItem
         testId="drawerSettingsBtn"
         focused={state.routeNames[state.index] === 'Settings'}
-        inactiveBackgroundColor={WHITE}
-        inactiveTintColor={BLACK}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label={t('drawer.label.settings', 'Settings')}
-        icon={({ focused }) => (
-          <AppSettings
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-          />
-        )}
+        icon={SettingsIcon}
         onPress={() => {
           navigation.navigate('Settings');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Settings</Text>}
+          })
         }}
       />
-      <CustomItem
+      {/* <CustomItem
         testId="drawerUpdateBtn"
         focused={false}
         inactiveTintColor={BLACK}
@@ -340,37 +305,39 @@ const CustomDrawerContent = (props) => {
             },
           );
         }}
-      />
+      /> */}
       <CustomItem
         testId="drawerContactUsBtn"
         focused={state.routeNames[state.index] === 'ContactUs'}
-        inactiveBackgroundColor={WHITE}
-        inactiveTintColor={BLACK}
-        activeTintColor={WHITE}
-        activeBackgroundColor={ORANGE}
         label={t('drawer.label.contactUs')}
-        icon={({ focused }) => (
-          <Mail
-            width={DEVICE_LARGE ? 28 : 24}
-            height={DEVICE_LARGE ? 28 : 24}
-            color={focused ? GREY : BLACK}
-            highlight={focused ? WHITE : ORANGE}
-          />
-        )}
+        icon={ContactUsIcon}
         onPress={() => {
           navigation.navigate('ContactUs');
+          navigation.setOptions({
+            headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Contact us</Text>}
+          })
         }}
       />
-      {__DEV__ && (
+
+      <CustomItem
+        testId="drawerTutorialBtn"
+        focused={state.routeNames[state.index] === 'Tutorial'}
+        label={t('drawer.label.tutorial')}
+        icon={TutorialIcon}
+        onPress={() => {
+          // navigation.navigate('ContactUs');
+          // navigation.setOptions({
+          //   headerTitle: () => {return <Text style={{fontFamily: 'Poppins-Medium', fontSize: fontSize[18], fontWeight: '600',}}>Contact us</Text>}
+          // })
+        }}
+      />
+
+      {/* {__DEV__ && (
         <CustomItem
           testId="drawerIconsBtn"
           focused={state.routeNames[state.index] === 'SampleIconPage'}
           // style={styles.drawerItem}
           // labelStyle={styles.labelStyle}
-          inactiveBackgroundColor={WHITE}
-          inactiveTintColor={BLACK}
-          activeTintColor={WHITE}
-          activeBackgroundColor={ORANGE}
           label="Sample Icon Page"
           icon={({ focused }) => (
             <List
@@ -384,7 +351,7 @@ const CustomDrawerContent = (props) => {
             navigation.navigate('SampleIconPage');
           }}
         />
-      )}
+      )} */}
     </DrawerContentScrollView>
   );
 };
@@ -397,6 +364,8 @@ export const HomeDrawer = () => {
     headerHeight += 7;
   }
 
+
+
   return (
     <Drawer.Navigator
       detachInactiveScreens={false}
@@ -404,16 +373,17 @@ export const HomeDrawer = () => {
         headerShown: false,
         drawerType: 'front',
         sceneContainerStyle: [styles.sceneContainer],
-        drawerStyle: [styles.drawer, { marginTop: headerHeight }],
-        drawerActiveTintColor: WHITE,
-        drawerInactiveTintColor: BLACK,
-        drawerActiveBackgroundColor: ORANGE,
-        drawerInactiveBackgroundColor: WHITE,
+        drawerStyle: [styles.drawer],
+        // drawerActiveTintColor: WHITE,
+        // drawerInactiveTintColor: BLACK,
+        // drawerActiveBackgroundColor: ORANGE,
+        // drawerInactiveBackgroundColor: WHITE,
         drawerItemStyle: styles.drawerItem,
         drawerLabelStyle: styles.labelStyle,
-        overlayColor: 'transparent',
+        overlayColor: DRAWER_BLURED_BACKGROUND,
       }}
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={(props) => <CustomDrawerContent {...props} navigation={props.navigation} />}
+      
     >
       <Drawer.Screen name="HomeScreen" component={HomeScreen} />
       <Drawer.Screen name="Achievements" component={TasksScreen} />
@@ -448,12 +418,16 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE,
   },
   drawer: {
-    width: '85%',
-    borderTopRightRadius: 40,
+    zIndex: 100,
+    elevation: 100,
+    width: '78%',
+    marginTop: 52,
+    // borderTopRightRadius: 40,
+    backgroundColor: DRAWER_BACKGROUND,
+    opacity: 0.99,
     shadowColor: 'rgba(196, 196, 196, 0.25)',
     shadowOpacity: 1,
     shadowRadius: 15,
-    elevation: 15,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -468,9 +442,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
-    paddingLeft: DEVICE_LARGE ? 45 : 35,
+    // paddingLeft: DEVICE_LARGE ? 45 : 35,
+    paddingLeft: 20,
     paddingTop: DEVICE_LARGE ? 20 : 18,
-    paddingBottom: DEVICE_LARGE ? 30 : 25,
+    // paddingBottom: DEVICE_LARGE ? 30 : 25,
+    paddingBottom: 16,
   },
   userName: {
     fontFamily: 'Poppins-Medium',
@@ -478,14 +454,17 @@ const styles = StyleSheet.create({
     marginLeft: DEVICE_LARGE ? 20 : 18,
   },
   drawerItem: {
+    width: '80%',
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
     marginVertical: 4,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     overflow: 'hidden',
-    paddingLeft: DEVICE_LARGE ? 43 : 34,
-    paddingVertical: 10,
+    // paddingLeft: DEVICE_LARGE ? 43 : 34,
+    paddingLeft: 16,
+    paddingVertical: 16,
+    borderRadius: 12
   },
   labelStyle: {
     fontFamily: 'Poppins-Medium',

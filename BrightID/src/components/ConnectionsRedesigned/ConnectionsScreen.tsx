@@ -1,12 +1,12 @@
-import React, { useContext, useMemo } from 'react';
-import { StyleSheet, View, StatusBar, FlatList } from 'react-native';
+import React, { useContext, useMemo, useState } from 'react';
+import { StyleSheet, View, StatusBar, FlatList, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
 import FloatingActionButton from '@/components/Helpers/FloatingActionButton';
 import EmptyList from '@/components/Helpers/EmptyList';
 import { connectionsSelector } from '@/utils/connectionsSelector';
-import { ORANGE, WHITE } from '@/theme/colors';
+import { BACKGROUND, GRAY2, ORANGE, PRIMARY, WHITE } from '@/theme/colors';
 import { DEVICE_LARGE } from '@/utils/deviceConstants';
 import { fontSize } from '@/theme/fonts';
 import { NodeApiContext } from '@/components/NodeApiGate';
@@ -14,6 +14,11 @@ import { updateConnections, userSelector } from '@/actions';
 import ConnectionCard from './ConnectionCard';
 import { MAX_DISPLAY_CONNECTIONS } from '@/utils/constants';
 import { useDispatch, useSelector } from '@/store/hooks';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+
+import Material from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MakeConnectionModal } from './modals/MakeConncection';
 
 /**
  * Connection screen of BrightID
@@ -37,7 +42,8 @@ const renderItem = ({ item, index }: { item: Connection; index: number }) => {
 
 export const ConnectionsScreen = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+//   const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const api = useContext(NodeApiContext);
   const route: { params?: { group: Group } } = useRoute() as {
     params?: { group: Group };
@@ -50,7 +56,7 @@ export const ConnectionsScreen = () => {
   const { id } = useSelector(userSelector);
 
   const handleNewConnection = () => {
-    navigation.navigate('MyCode' as never);
+    // navigation.navigate('MyCode');
   };
 
   const ConnectionList = useMemo(() => {
@@ -96,18 +102,29 @@ export const ConnectionsScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, connections]);
 
+  const [makeConnectionModal, setMakeConnectionModal] = useState(false);
+
   return (
     <>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={ORANGE}
+        barStyle="dark-content"
+        backgroundColor={GRAY2}
         animated={true}
       />
-      <View style={styles.orangeTop} />
 
       <View style={styles.container} testID="connectionsScreen">
+        <MakeConnectionModal  makeConnectionModal={makeConnectionModal} setMakeConnectionModal={setMakeConnectionModal}/>
         <View style={styles.mainContainer}>{ConnectionList}</View>
-        <FloatingActionButton onPress={handleNewConnection} />
+        {/* <FloatingActionButton onPress={handleNewConnection} /> */}
+        
+        <TouchableOpacity style={styles.circleButton} onPress={() => {setMakeConnectionModal(true)}}>
+            <Material
+              name="plus"
+              size={36}
+              color={WHITE}
+              style={{ width: 36, height: 36 }}
+            />
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -122,9 +139,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: WHITE,
-    borderTopLeftRadius: 58,
-    marginTop: -58,
+    backgroundColor: BACKGROUND,
     overflow: 'hidden',
     zIndex: 10,
   },
@@ -149,6 +164,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     color: WHITE,
     fontSize: fontSize[11],
+  },
+  circleButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: ORANGE,
+    backgroundColor: PRIMARY,
+    width: 56,
+    height: 56,
+    borderRadius: 27,
+    // shadowColor: 'rgba(0,0,0,0.5)',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowRadius: 4,
+    // elevation: 4,
+    position: 'absolute',
+    bottom: 20,
+    right: 20
   },
 });
 

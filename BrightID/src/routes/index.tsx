@@ -79,15 +79,18 @@ const App = () => {
   const topStack = !eula ? Eula(eula) : !id ? Onboarding() : MainTabs(id);
 
   return (
-    <NodeApiGate>
-      {keyError ? (
-        <MissingKeysScreen keyError={keyError} />
-      ) : (
+    // <NodeApiGate>
+    //   {keyError ? (
+    //     <MissingKeysScreen keyError={keyError} />
+    //   ) : (
+    //     <Stack.Navigator detachInactiveScreens={false}>
+    //       {topStack}
+    //     </Stack.Navigator>
+    //   )}
+    // </NodeApiGate>
         <Stack.Navigator detachInactiveScreens={false}>
           {topStack}
         </Stack.Navigator>
-      )}
-    </NodeApiGate>
   );
 };
 export default App;
