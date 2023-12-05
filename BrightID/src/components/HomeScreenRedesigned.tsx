@@ -247,7 +247,7 @@ export const HomeScreen = (props) => {
           {status}
         </Text>
       </View>
-    } else if(status === 'Undefined'){
+    } else if(status === 'Unverified'){
       return<View style={[styles.badgeContainer, {borderColor: WARNING,
         backgroundColor: LIGHT_WARNING, marginBottom: 10}]}>
         <Text style={[styles.badgeText, {color: WARNING}]}> 
@@ -263,6 +263,8 @@ export const HomeScreen = (props) => {
       </View>
     }
   }
+
+  console.log('hello')
 
   return (
     <View style={styles.wrapper}>
@@ -316,7 +318,7 @@ export const HomeScreen = (props) => {
           
           <Text style={styles.name}>{name}</Text>
 
-          <View style={styles.row}>
+            <View style={styles.row}>
               <View style={styles.tripleBox}>
                 <View style={styles.tripleBoxTextContainer}>
                   <Text style={styles.tripleBoxHeader}>Meet</Text>
@@ -328,7 +330,7 @@ export const HomeScreen = (props) => {
                   </View>
                   ) : (
                     <>
-                      {badge('Undefined')}
+                      {badge('Unverified')}
                       <TouchableOpacity style={styles.joinMeetContainer} onPress={() => {
                     Linking.openURL('https://meet.brightid.org');
                   }}>
@@ -350,14 +352,14 @@ export const HomeScreen = (props) => {
 
               <View style={styles.horizontalGap} />
 
-              <View style={styles.tripleBox}>
-                <View style={styles.tripleBoxTextContainer}>
-                  <Text style={styles.tripleBoxHeader}>Aura</Text>
-                  <Text style={styles.tripleBoxNormalText}>verification</Text>
+            <View style={styles.tripleBox}>
+                  <View style={styles.tripleBoxTextContainer}>
+                    <Text style={styles.tripleBoxHeader}>Aura</Text>
+                    <Text style={styles.tripleBoxNormalText}>verification</Text>
+                  </View>
+                  {badge('Soon')}
                 </View>
-                {badge('Soon')}
-              </View>
-          </View>
+            </View>
 
           {/* <View style={styles.verticalGap}/> */}
           {/* <View style={styles.verticalGap}/> */}

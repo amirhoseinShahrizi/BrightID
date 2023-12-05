@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { BLACK, GRAY1, GRAY2, GRAY9, PRIMARY, WHITE } from "@/theme/colors";
 import { fontSize } from "@/theme/fonts";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import {  Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import Close from '@/components/Icons/Close';
 import { c } from 'msw/lib/glossary-de6278a9';
 import QrCodeIcon from '@/components/Icons/QrCodeIcon';
@@ -9,7 +9,7 @@ import Friends from '@/components/Icons/Friends';
 import { useDispatch, useSelector } from '@/store/hooks';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+// import Modal from "react-native-modal";
 
 
 export const MakeConnectionModal = ({makeConnectionModal, setMakeConnectionModal}) => {
@@ -23,9 +23,18 @@ export const MakeConnectionModal = ({makeConnectionModal, setMakeConnectionModal
     }
 
     return <>
-    {/* {makeConnectionModal && <TouchableOpacity style={styles.closingModal2} onPress={() => {setMakeConnectionModal(false)}} />} */}
-    <Modal backdropOpacity={0.7} animationType='slide' visible={makeConnectionModal} transparent={true} onRequestClose={() => handleModalRequestClose()}>
+    
+    {/* <ReactNativeModal>
+
+    </ReactNativeModal> */}
+    
+    {makeConnectionModal && <TouchableOpacity style={styles.closingModalView} onPress={() => {setMakeConnectionModal(false)}} />}
+    <Modal  animationType='slide' visible={makeConnectionModal} transparent={true} onRequestClose={() => handleModalRequestClose()}>
         {/* <TouchableOpacity style={styles.closingModal} onPress={() => {handleModalRequestClose()}} /> */}
+        <TouchableWithoutFeedback onPress={() => {handleModalRequestClose()}}>
+            <View style={styles.closingModal}/>
+        </TouchableWithoutFeedback>
+
 
         <View style={styles.modalCenteredView}>
           <View style={styles.modalContainer}> 
@@ -75,6 +84,19 @@ export const MakeConnectionModal = ({makeConnectionModal, setMakeConnectionModal
 }
 
 const styles = StyleSheet.create({
+  closingModalView: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    // justifyContent:'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1001,
+    // width: '100%',
+    // height: '100%'
+  },
     splitter: {
       width: '90%',
       height: 1,
@@ -134,22 +156,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
       },
-      closingModal2: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        // justifyContent:'center',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 1000,
-        width: '100%',
-        height: '100%'
-      },
       closingModal: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        // backgroundColor: 'rgba(0,0,0,0.5)',
         // justifyContent:'center',
       },
       modalCenteredView: {
@@ -172,6 +181,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         bottom: 0,
         alignItems: 'center',
-        zIndex: 1001
+        zIndex: 900
       },
 });

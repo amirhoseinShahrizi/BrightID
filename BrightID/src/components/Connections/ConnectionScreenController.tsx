@@ -150,11 +150,11 @@ function ConnectionScreenController() {
 
   // Add fake user functionality in DEV mode
   useLayoutEffect(() => {
-    if (__DEV__) {
-      navigation.setOptions({
-        headerRight: () => <ConnectionTestButton connectionId={connectionId} />,
-      });
-    }
+    // if (__DEV__) {
+    //   navigation.setOptions({
+    //     headerRight: () => <ConnectionTestButton connectionId={connectionId} />,
+    //   });
+    // }
   }, [navigation, connectionId]);
 
   if (!connection) {

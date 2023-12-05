@@ -1,16 +1,16 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { StyleSheet, View, StatusBar, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, StatusBar, FlatList, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
 import FloatingActionButton from '@/components/Helpers/FloatingActionButton';
 import EmptyList from '@/components/Helpers/EmptyList';
 import { connectionsSelector } from '@/utils/connectionsSelector';
-import { BACKGROUND, GRAY2, ORANGE, PRIMARY, WHITE } from '@/theme/colors';
+import { BACKGROUND, GRAY1, GRAY2, GRAY4, GRAY6, GRAY9, ORANGE, PRIMARY, WHITE } from '@/theme/colors';
 import { DEVICE_LARGE } from '@/utils/deviceConstants';
 import { fontSize } from '@/theme/fonts';
 import { NodeApiContext } from '@/components/NodeApiGate';
-import { updateConnections, userSelector } from '@/actions';
+import { setConnectionsSearch, updateConnections, userSelector } from '@/actions';
 import ConnectionCard from './ConnectionCard';
 import { MAX_DISPLAY_CONNECTIONS } from '@/utils/constants';
 import { useDispatch, useSelector } from '@/store/hooks';
@@ -18,7 +18,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MakeConnectionModal } from './modals/MakeConncection';
+import { MakeConnectionModal } from './modals/MakeConncectionModal';
+import SearchIcon from '../Icons/connectionPage/SearchIcon';
+import { SortModal } from './modals/SortByModal';
+import { RemoveConnectionModal } from './modals/RemoveConnectionModal';
+import { FilterByTrustLevelModal } from './modals/FilterByTrustLevelModal';
+import SearchConnections from '../Helpers/SearchConnections';
+import SearchBarRedesigned from '../Helpers/SearchBarRedesigned';
+import SortIcon from '../Icons/connectionPage/SortIcon';
+import Filter from '../Icons/connectionPage/Filter';
 
 /**
  * Connection screen of BrightID
@@ -38,6 +46,10 @@ const renderItem = ({ item, index }: { item: Connection; index: number }) => {
   return <ConnectionCard {...item} index={index} />;
 };
 
+const ItemSeparator = () => {
+  return <View style={styles.ItemSeparator}/>
+}
+
 /** Main Component */
 
 export const ConnectionsScreen = () => {
@@ -55,9 +67,6 @@ export const ConnectionsScreen = () => {
   const { t } = useTranslation();
   const { id } = useSelector(userSelector);
 
-  const handleNewConnection = () => {
-    // navigation.navigate('MyCode');
-  };
 
   const ConnectionList = useMemo(() => {
     const onRefresh = async () => {
@@ -83,7 +92,7 @@ export const ConnectionsScreen = () => {
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         contentContainerStyle={{
-          paddingBottom: 70,
+          // paddingBottom: 70,
           paddingTop: 20,
           flexGrow: 1,
         }}
@@ -97,12 +106,15 @@ export const ConnectionsScreen = () => {
             title={t('connections.text.noConnections')}
           />
         }
+        ItemSeparatorComponent={ItemSeparator}
       />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, connections]);
 
   const [makeConnectionModal, setMakeConnectionModal] = useState(false);
+  const [sortModal, setSortModal] = useState(false);
+  const [filterByTrustLevel, setFilterByTrustLevel] = useState(false);
 
   return (
     <>
@@ -113,9 +125,30 @@ export const ConnectionsScreen = () => {
       />
 
       <View style={styles.container} testID="connectionsScreen">
+        {/* <RemoveConnectionModal  removeConnectionModal={makeConnectionModal} setRemoveConnectionModal={setMakeConnectionModal}/> */}
+        <SortModal  sortModal={sortModal} setSortModal={setSortModal}/>
+        <FilterByTrustLevelModal  filterByTrustLevel={filterByTrustLevel} setFilterByTrustLevel={setFilterByTrustLevel}/>
         <MakeConnectionModal  makeConnectionModal={makeConnectionModal} setMakeConnectionModal={setMakeConnectionModal}/>
+
+
+
+        <SearchBarRedesigned setSearchValue={setConnectionsSearch}/>
+        {/* <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => {
+            setSortModal(true);
+          }}>
+            <SortIcon />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            setFilterByTrustLevel(true)
+          }}>
+            <Filter />
+          </TouchableOpacity>
+        </View> */}
+        
+
         <View style={styles.mainContainer}>{ConnectionList}</View>
-        {/* <FloatingActionButton onPress={handleNewConnection} /> */}
+        
         
         <TouchableOpacity style={styles.circleButton} onPress={() => {setMakeConnectionModal(true)}}>
             <Material
@@ -131,21 +164,27 @@ export const ConnectionsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  orangeTop: {
-    backgroundColor: ORANGE,
-    height: DEVICE_LARGE ? 70 : 65,
+  ItemSeparator: {
     width: '100%',
-    zIndex: 1,
+    height: 1,
+    backgroundColor: GRAY2,
+    marginVertical: 16
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    width: '60%',
+    justifyContent: 'space-evenly'
   },
   container: {
     flex: 1,
-    backgroundColor: BACKGROUND,
+    backgroundColor: GRAY1,
     overflow: 'hidden',
     zIndex: 10,
+    padding: 20
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
+    // backgroundColor: 'blue',
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -153,6 +192,7 @@ const styles = StyleSheet.create({
   connectionsContainer: {
     flex: 1,
     width: '100%',
+    // backgroundColor: 'red'
   },
   actionCard: {
     height: DEVICE_LARGE ? 76 : 71,

@@ -45,5 +45,6 @@ export const LIGHT_INFO = '#E8F7FC'
 export const BACKGROUND = '#F8F8F8'
 export const DRAWER_BACKGROUND = '#F2F2F2'
 export const DRAWER_BLURED_BACKGROUND = 'rgba(28, 28, 28, 0.6)'
+export const ACTION = "#37B088"
 
 

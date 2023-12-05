@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "react-native-keyboard-aware-scroll-view": "^0.9.5"
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-modal": "^13.0.1"
   }
 }

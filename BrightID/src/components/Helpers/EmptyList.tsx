@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { DEVICE_LARGE } from '@/utils/deviceConstants';
-import { GREY, WHITE } from '@/theme/colors';
+import { GRAY1, GREY, WHITE } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 
 type Props = {
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: WHITE,
+    backgroundColor: GRAY1,
     height: '100%',
     width: '100%',
   },

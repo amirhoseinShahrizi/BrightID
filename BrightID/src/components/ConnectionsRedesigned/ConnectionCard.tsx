@@ -33,6 +33,8 @@ import {
   LIGHT_BLACK,
   DARK_ORANGE,
   RED,
+  GRAY2,
+  GRAY9,
 } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 import { ConnectionStatus } from '@/components/Helpers/ConnectionStatus';
@@ -276,32 +278,35 @@ const ConnectionCard = (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: DEVICE_LARGE ? 102 : 92,
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
+    // height: DEVICE_LARGE ? 102 : 92,
+    // backgroundColor: 'transparent',
+    // backgroundColor: 'green',
   },
   card: {
-    width: '90%',
+    width: '100%',
     height: DEVICE_LARGE ? 76 : 71,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: WHITE,
-    shadowColor: 'rgba(221, 179, 169, 0.3)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 5,
-    elevation: 5,
-    borderTopLeftRadius: DEVICE_LARGE ? 12 : 10,
-    borderBottomLeftRadius: DEVICE_LARGE ? 12 : 10,
+    // borderBottomColor: GRAY2,
+    // borderBottomWidth: 1,
+    // backgroundColor: WHITE,
+    // shadowColor: 'rgba(221, 179, 169, 0.3)',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 1,
+    // shadowRadius: 5,
+    // elevation: 5,
+    // borderTopLeftRadius: DEVICE_LARGE ? 12 : 10,
+    // borderBottomLeftRadius: DEVICE_LARGE ? 12 : 10,
   },
   photo: {
     borderRadius: 55,
     width: DEVICE_LARGE ? 65 : 55,
     height: DEVICE_LARGE ? 65 : 55,
-    marginLeft: DEVICE_LARGE ? 14 : 12,
-    marginTop: -30,
+    // marginLeft: DEVICE_LARGE ? 14 : 12,
+    // marginTop: -30,
   },
   info: {
     marginLeft: DEVICE_LARGE ? 22 : 19,
@@ -318,6 +323,7 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: 'Poppins-Medium',
     fontSize: fontSize[16],
+    color: GRAY9
   },
   statusContainer: {
     flexDirection: 'column',
