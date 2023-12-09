@@ -8,7 +8,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Modal
+  Modal,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -110,7 +111,10 @@ export const Onboard = () => {
         />
 
         <Modal animationType='fade' visible={modalVisible} transparent={true} onRequestClose={() => handleModalRequestClose()}>
-          <TouchableOpacity style={styles.closingModal} onPress={() => {setModalVisible(false)}} />
+          {/* <TouchableOpacity style={styles.closingModal} onPress={() => {setModalVisible(false)}} /> */}
+          <TouchableWithoutFeedback onPress={() => {handleModalRequestClose()}}>
+              <View style={styles.closingModal}/>
+          </TouchableWithoutFeedback>
 
           <View style={styles.modalCenteredView}>
             <View style={styles.modalContainer}> 

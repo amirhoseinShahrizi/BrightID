@@ -11,6 +11,8 @@ import { DEVICE_LARGE } from '@/utils/deviceConstants';
 import { BLUE, BLACK } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 import { connection_levels } from '@/utils/constants';
+import Pencil from '../Icons/connectionPage/Pencil';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Props = {
   level: ConnectionLevel;
@@ -18,7 +20,7 @@ type Props = {
 };
 
 function TrustLevelView({ level, connectionId }: Props) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { t } = useTranslation();
   const setLevel = () => {
     navigation.navigate('SetTrustlevel', {
@@ -27,11 +29,11 @@ function TrustLevelView({ level, connectionId }: Props) {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.trustLevelLabel}>
+      {/* <View style={styles.trustLevelLabel}>
         <Text style={styles.trustLevelLabelText}>
           {t('connectionDetails.label.connectionLevel')}
         </Text>
-      </View>
+      </View> */}
 
       <View style={styles.trustLevel}>
         <Text
@@ -44,14 +46,19 @@ function TrustLevelView({ level, connectionId }: Props) {
           {connectionLevelStrings[level]}
         </Text>
       </View>
+      
       {level !== connection_levels.REPORTED && (
-        <TouchableOpacity
-          style={styles.trustLevelButton}
-          testID="EditConnectionLevelBtn"
-          onPress={setLevel}
-        >
-          <Material name="edit" size={DEVICE_LARGE ? 22 : 20} color={BLUE} />
-        </TouchableOpacity>
+        <>
+          <View style={{marginLeft: 8}}/>
+          <TouchableOpacity
+            style={styles.trustLevelButton}
+            testID="EditConnectionLevelBtn"
+            onPress={setLevel}
+          >
+            {/* <Material name="edit" size={DEVICE_LARGE ? 22 : 20} color={BLUE} /> */}
+            <Pencil />
+          </TouchableOpacity>
+        </>
       )}
     </View>
   );
@@ -61,7 +68,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: DEVICE_LARGE ? 22 : 20,
+    justifyContent: 'center',
+    // marginBottom: DEVICE_LARGE ? 22 : 20,
   },
   trustLevelLabel: {
     alignItems: 'center',
@@ -69,12 +77,11 @@ const styles = StyleSheet.create({
   },
   trustLevelLabelText: {
     fontFamily: 'Poppins-Medium',
-    fontSize: fontSize[16],
+    fontSize: fontSize[14],
     color: BLACK,
   },
   trustLevel: {
-    flex: 1,
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   trustLevelText: {

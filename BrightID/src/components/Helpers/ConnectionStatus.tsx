@@ -7,7 +7,7 @@ import {
   connectionLevelStrings,
 } from '@/utils/connectionLevelStrings';
 import { DEVICE_LARGE } from '@/utils/deviceConstants';
-import { GREY, RED } from '@/theme/colors';
+import { GRAY8, GREY, RED } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 import { connection_levels } from '@/utils/constants';
 
@@ -83,6 +83,8 @@ export const ConnectionStatus = ({
   } else {
     return (
       <View style={styles.statusContainer} testID={`connection-${index}`}>
+        {ConnectionDate}
+        {InfoText}
         <Text
           testID={`connection_level-${index}`}
           style={[
@@ -92,8 +94,7 @@ export const ConnectionStatus = ({
         >
           {connectionLevelStrings[level]}
         </Text>
-        {ConnectionDate}
-        {InfoText}
+        
       </View>
     );
   }
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   connectionTime: {
     fontFamily: 'Poppins-Regular',
     fontSize: DEVICE_LARGE ? 10 : 9,
-    color: '#B64B32',
+    color: GRAY8,
   },
   infoText: {
     fontFamily: 'Poppins-Regular',
