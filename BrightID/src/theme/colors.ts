@@ -21,7 +21,7 @@ export const DARK_RED = '#B50008';
 export const RED = '#ED1B24';
 export const LIGHT_RED = '#FD9297';
 export const YELLOW = '#F6BF08';
-
+                        
 export const PRIMARY = '#ED7A5D'
 export const DARK_PRIMARY = '#B64B32'
 export const GRAY1 = '#F8F8F8'
@@ -38,4 +38,13 @@ export const ERROR = '#FF4444'
 export const WARNING = '#F0BB00'
 export const SUCCESS = '#00C851'
 export const INFO = '#33B5E5'
+export const LIGHT_SUCCESS = '#E5FFF0'
+export const LIGHT_WARNING = '#FFF9E5'
+export const LIGHT_INFO = '#E8F7FC'
+
+export const BACKGROUND = '#F8F8F8'
+export const DRAWER_BACKGROUND = '#F2F2F2'
+export const DRAWER_BLURED_BACKGROUND = 'rgba(28, 28, 28, 0.6)'
+export const ACTION = "#37B088"
+
 

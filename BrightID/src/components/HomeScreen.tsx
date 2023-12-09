@@ -27,7 +27,7 @@ import {
 import { linkedContextTotal } from '@/reducer/appsSlice';
 import { verifiedConnectionsSelector } from '@/reducer/connectionsSlice';
 import { retrieveImage } from '@/utils/filesystem';
-import { BLACK, BLUE, DARKER_GREY, ORANGE, WHITE } from '@/theme/colors';
+import { BLACK, BLUE, DARKER_GREY, GRAY1, GRAY10, GRAY2, GRAY6, GRAY7, GRAY8, GRAY9, INFO, LIGHT_INFO, LIGHT_SUCCESS, LIGHT_WARNING, ORANGE, PRIMARY, SUCCESS, WARNING, WHITE } from '@/theme/colors';
 import fetchUserInfo from '@/actions/fetchUserInfo';
 import ChatBox from '@/components/Icons/ChatBox';
 import Camera from '@/components/Icons/Camera';
@@ -54,6 +54,11 @@ import {
   discordUrl,
   UNIVERSAL_LINK_PREFIX,
 } from '@/utils/constants';
+import { LinearGradient } from 'react-native-svg';
+import Friends from './Icons/Friends';
+import Discord from './Icons/Discord';
+import QrCodeIcon from './Icons/QrCodeIcon';
+import QrCodeScannerIcon from './Icons/QrCodeScannerIcon';
 
 /**
  * Home screen of BrightID
@@ -234,428 +239,390 @@ export const HomeScreen = (props) => {
     </View>
   ) : null;
 
-  return (
-    <View style={[styles.container, { marginTop: headerHeight }]}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#fff"
-        animated={true}
-      />
-      <View style={styles.profileContainer} testID="PhotoContainer">
-        {profilePhoto ? (
-          <Image
-            source={{
-              uri: profilePhoto,
-            }}
-            style={styles.photo}
-            resizeMode="cover"
-            onError={(e) => {
-              console.log(e);
-            }}
-            accessible={true}
-            accessibilityLabel={t('common.accessibilityLabel.profilePhoto')}
-          />
-        ) : null}
-        <View style={styles.verifyNameContainer} testID="homeScreen">
-          <View style={styles.nameContainer}>
-            <Text testID="EditNameBtn" style={styles.name} numberOfLines={1}>
-              {name}
-            </Text>
-          </View>
-          <View style={styles.profileDivider} />
-          <View style={styles.verificationsContainer}>
-            {verificationPatches.length > 0 ? (
-              verificationPatches.map((patch) => (
-                <TouchableOpacity
-                  key={`verificationPatch-${patch.text}`}
-                  style={styles.verificationBox}
-                  onPress={() => {
-                    if (patch?.task?.navigationTarget) {
-                      navigation.navigate(patch.task.navigationTarget, {
-                        url: patch.task.url,
-                      });
-                    }
-                  }}
-                >
-                  <Text style={styles.verificationText}>{patch.text}</Text>
-                </TouchableOpacity>
-              ))
-            ) : loading ? (
-              <View style={styles.verificationBox}>
-                <ActivityIndicator size="small" color={DARKER_GREY} animating />
-              </View>
-            ) : (
-              <>
-                <View style={styles.verificationBox}>
-                  <Text
-                    style={{
-                      ...styles.verificationText,
-                      color: DARKER_GREY,
-                      borderColor: DARKER_GREY,
-                    }}
-                  >
-                    Verifications: None
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.orangeButton}
-                  onPress={() => {
-                    Linking.openURL('https://meet.brightid.org');
-                  }}
-                >
-                  <Text style={styles.orangeButtonLabel}>
-                    {t('home.button.joinmeet', 'Join a BrightID Meet')}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </View>
+  const badge = (status: String) => {
+    if(status === 'Verified'){
+      return<View style={[styles.badgeContainer, {borderColor: SUCCESS,
+        backgroundColor: LIGHT_SUCCESS}]}>
+        <Text style={[styles.badgeText, {color: SUCCESS}]}> 
+          {status}
+        </Text>
       </View>
+    } else if(status === 'Unverified'){
+      return<View style={[styles.badgeContainer, {borderColor: WARNING,
+        backgroundColor: LIGHT_WARNING, marginBottom: 10}]}>
+        <Text style={[styles.badgeText, {color: WARNING}]}> 
+          {status}
+        </Text>
+      </View>
+    } else if(status === 'Soon'){
+      return<View style={[styles.badgeContainer, {borderColor: INFO,
+        backgroundColor: LIGHT_INFO}]}>
+        <Text style={[styles.badgeText, {color: INFO}]}> 
+          {status}
+        </Text>
+      </View>
+    }
+  }
 
-      <View style={styles.countsContainer}>
-        <TouchableOpacity
-          testID="connectionsBtn"
-          style={styles.countsCard}
-          onPress={() => {
+  console.log('hello')
+
+  return (
+    <View style={styles.wrapper}>
+      <View style={styles.animatedBG}></View>
+        <StatusBar
+            barStyle="dark-content"
+            backgroundColor={GRAY2}
+            animated={true}
+        />
+        <View style={styles.container}>
+          
+          <View style={styles.backgroundCircle}>
+            {profilePhoto ? (
+              <Image
+                source={{
+                  uri: profilePhoto,
+                }}
+                style={styles.photo}
+                resizeMode="cover"
+                onError={(e) => {
+                  console.log(e);
+                }}
+                accessible={true}
+                accessibilityLabel={t('common.accessibilityLabel.profilePhoto')}
+              />
+            ) : null}
+          </View>
+
+          
+          <View style={styles.countsWrapper}>
+            <TouchableOpacity style={styles.countsContainer} onPress={() => {
             dispatch(setActiveNotification(null));
             navigation.navigate('Connections');
-          }}
-        >
-          <Text testID="ConnectionsCount" style={styles.countsNumberText}>
-            {connectionsCount}
-          </Text>
-          <View style={styles.countsBorder} />
-          <Text style={styles.countsDescriptionText}>
-            {t('home.button.connections')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="achievementsBtn"
-          style={styles.countsCard}
-          onPress={() => {
-            navigation.navigate('Achievements');
-          }}
-        >
-          <Text testID="AchievementsCount" style={styles.countsNumberText}>
-            {completedTaskIds.length}{' '}
-            <Text style={styles.totalCountsNumberText}>
-              {' '}
-              / {taskIds.length}{' '}
-            </Text>
-          </Text>
+          }}>
+              <Text style={styles.countsNumber}>{connectionsCount}</Text>
+              <Text style={styles.countsText}>{t('home.button.connections')}</Text>
+            </TouchableOpacity>
 
-          <View style={styles.countsBorder} />
-          <Text style={styles.countsDescriptionText}>
-            {t('home.button.achievements')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          testID="appsBtn"
-          style={styles.countsCard}
-          onPress={() => {
+            <TouchableOpacity style={styles.countsContainer} onPress={() => {
             dispatch(setActiveNotification(null));
             navigation.navigate('Apps', {
               baseUrl: undefined,
               appId: undefined,
               appUserId: undefined,
             });
-          }}
-        >
-          <Text testID="AppsCount" style={styles.countsNumberText}>
-            {linkedContextsCount}
-          </Text>
-          <View style={styles.countsBorder} />
-          <Text style={styles.countsDescriptionText}>
-            {t('home.button.apps')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bottomOrangeContainer}>
-        <View style={styles.connectContainer}>
-          <Text style={styles.newConnectionText}>
-            {t('home.label.createNewConnection')}
-          </Text>
-          <TouchableOpacity
-            testID="MyCodeBtn"
-            style={styles.connectButton}
-            onPress={() => {
-              dispatch(setActiveNotification(null));
-              navigation.navigate('MyCode');
-            }}
-            accessible={true}
-            accessibilityLabel={t('home.accessibilityLabel.connect')}
-          >
-            <Material
-              name="qrcode"
-              color={BLACK}
-              size={DEVICE_LARGE ? 25 : 20}
-            />
-            <Text style={styles.connectText}>{t('home.button.myCode')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            testID="ScanCodeBtn"
-            style={styles.connectButton}
-            onPress={() => {
-              dispatch(setActiveNotification(null));
-              navigation.navigate('ScanCode');
-            }}
-            accessible={true}
-            accessibilityLabel={t('home.accessibilityLabel.connect')}
-          >
-            <Camera
-              width={DEVICE_LARGE ? 25 : 20}
-              height={DEVICE_LARGE ? 25 : 20}
-            />
-            <Text style={styles.connectText}>{t('home.button.scanCode')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            testID="JoinCommunityBtn"
-            style={styles.communityContainer}
-            onPress={handleChat}
-          >
-            <ChatBox
-              width={DEVICE_LARGE ? 22 : 20}
-              height={DEVICE_LARGE ? 22 : 20}
-              color={WHITE}
-            />
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: WHITE,
-                marginLeft: 5,
+          }}>
+              <Text style={styles.countsNumber}>{linkedContextsCount}</Text>
+              <Text style={styles.countsText}>{t('home.button.apps')}</Text>
+            </TouchableOpacity>  
+          </View>
+          
+          <Text style={styles.name}>{name}</Text>
+
+            <View style={styles.row}>
+              <View style={styles.tripleBox}>
+                <View style={styles.tripleBoxTextContainer}>
+                  <Text style={styles.tripleBoxHeader}>Meet</Text>
+                  <Text style={styles.tripleBoxNormalText}>verification</Text>
+                </View>
+                {verificationPatches.length > 0 ? (badge('Verified')) : 0 ? (
+                  <View style={{margin: 2}}>
+                    <ActivityIndicator size="small" color={DARKER_GREY} animating />
+                  </View>
+                  ) : (
+                    <>
+                      {badge('Unverified')}
+                      <TouchableOpacity style={styles.joinMeetContainer} onPress={() => {
+                    Linking.openURL('https://meet.brightid.org');
+                  }}>
+                        <Text style={styles.joinMeetText}>Join Meet</Text>
+                      </TouchableOpacity>
+                    </>
+                  )
+                }                
+              </View>
+              <View style={styles.horizontalGap} />
+
+              <View style={styles.tripleBox}>
+                <View style={styles.tripleBoxTextContainer}>
+                  <Text style={styles.tripleBoxHeader}>Bitu</Text>
+                  <Text style={styles.tripleBoxNormalText}>verification</Text>
+                </View>
+                {badge('Soon')}
+              </View>
+
+              <View style={styles.horizontalGap} />
+
+            <View style={styles.tripleBox}>
+                  <View style={styles.tripleBoxTextContainer}>
+                    <Text style={styles.tripleBoxHeader}>Aura</Text>
+                    <Text style={styles.tripleBoxNormalText}>verification</Text>
+                  </View>
+                  {badge('Soon')}
+                </View>
+            </View>
+
+          {/* <View style={styles.verticalGap}/> */}
+          {/* <View style={styles.verticalGap}/> */}
+          
+          <View style={styles.column}>
+            <TouchableOpacity 
+              style={styles.firstBtn} 
+              onPress={() => {
+                navigation.navigate('FindFriendsScreen');
               }}
             >
-              <Text style={styles.communityLink}>
-                {t('home.link.community')}
-              </Text>
+              <Friends />
+              <Text style={styles.firstBtnTxt}>Find Friends</Text>
+            </TouchableOpacity>
+
+            <View style={styles.verticalGap}/>
+
+            <View style={[styles.row, {justifyContent: 'space-between', width: '100%'}]}>
+              <TouchableOpacity 
+                style={styles.secondBtn}
+                onPress={() => {
+                  dispatch(setActiveNotification(null));
+                  navigation.navigate('MyCode');
+                }}
+                accessible={true}
+                accessibilityLabel={t('home.accessibilityLabel.connect')}
+              >
+                <QrCodeIcon color={WHITE}/>
+                <Text style={styles.secondBtnTxt}>{t('home.button.myCode')}</Text>
+              </TouchableOpacity>
+
+              {/* <View style={styles.horizontalGap} /> */}
+
+              <TouchableOpacity 
+                style={styles.secondBtn}
+                onPress={() => {
+                  dispatch(setActiveNotification(null));
+                  navigation.navigate('ScanCode');
+                }}
+                accessible={true}
+                accessibilityLabel={t('home.accessibilityLabel.connect')}
+              >
+                <QrCodeScannerIcon color={WHITE}/>
+                <Text style={styles.secondBtnTxt}>{t('home.button.scanCode')}</Text>
+              </TouchableOpacity>
             </View>
+
+          </View>
+          
+          {/* <View style={styles.verticalGap}/> */}
+          {/* <View style={styles.verticalGap}/> */}
+          {/* <View style={styles.verticalGap}/> */}
+          
+          <TouchableOpacity style={styles.row} onPress={handleChat}>
+            <Discord />
+            <Text style={styles.discordText}>BrightID Discord</Text>
           </TouchableOpacity>
+
+          
+          
         </View>
-        <DeepPasteLink />
-        <View style={styles.infoContainer}>
-          <TouchableOpacity
-            style={styles.nodeLinkContainer}
-            onPress={() => navigation.navigate('NodeModal')}
-          >
-            <Text style={styles.nodeLink}>
-              {baseUrl ? baseUrl.split('://')[1] : 'disconnected'} - v{' '}
-              {app_version}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {userBrightId}
-      </View>
+
     </View>
   );
 };
 
-const PHOTO_WIDTH = DEVICE_LARGE ? 90 : 78;
+// const PHOTO_WIDTH = DEVICE_LARGE ? 90 : 78;
+const PHOTO_WIDTH = 120;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    backgroundColor: ORANGE,
-  },
-  profileContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingLeft: DEVICE_LARGE ? '15%' : '12%',
-    backgroundColor: WHITE,
-    paddingTop: DEVICE_LARGE ? 10 : 0,
-  },
-  verifyNameContainer: {
-    flexDirection: 'column',
-    marginLeft: DEVICE_LARGE ? 40 : 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: WHITE,
-    maxWidth: '50%',
-  },
-  nameContainer: {
-    flexDirection: 'row',
-  },
-  profileDivider: {
-    borderBottomWidth: 2,
-    borderBottomColor: ORANGE,
-    paddingBottom: 3,
-    width: '118%',
-  },
-  photo: {
-    width: PHOTO_WIDTH,
-    height: PHOTO_WIDTH,
-    borderRadius: 71,
-    shadowColor: 'rgba(0, 0, 0, 0.5)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  name: {
-    fontFamily: 'Poppins-Medium',
-    fontSize: fontSize[18],
-    color: BLACK,
-  },
-  verificationsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 5,
-    marginBottom: DEVICE_LARGE ? 10 : 0,
-    width: '100%',
-    backgroundColor: WHITE,
-    flexWrap: 'wrap',
-  },
-  verificationBox: {
-    margin: 2,
-  },
-  verificationText: {
-    paddingLeft: 4,
-    paddingRight: 4,
-    paddingTop: 4,
-    fontFamily: 'Poppins-Medium',
-    fontSize: fontSize[11],
-    color: BLUE,
-    borderColor: BLUE,
-    borderWidth: 1,
-    borderRadius: 8,
-    textAlign: 'center',
-  },
-  countsCard: {
-    backgroundColor: WHITE,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: DEVICE_LARGE ? 90 : 82,
-    height: DEVICE_LARGE ? 100 : 90,
-    borderRadius: 10,
-    elevation: 5,
-    shadowColor: 'rgba(221, 179, 169, 0.3)',
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    joinMeetContainer: {
+      position: 'absolute',
+      bottom: 0,
+      borderBottomRightRadius: 12,
+      borderBottomLeftRadius: 12,
+      backgroundColor: PRIMARY,
+      paddingVertical: 4,
+      width: '100%',
+      
     },
-    shadowRadius: 10,
-  },
-  countsContainer: {
-    justifyContent: 'space-evenly',
-    flexDirection: 'row',
-    width: '100%',
-    borderBottomLeftRadius: 58,
-    borderBottomRightRadius: 58,
-    backgroundColor: WHITE,
-    flexGrow: 1,
-    paddingTop: DEVICE_LARGE ? 10 : 0,
-  },
-  countsBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: ORANGE,
-    width: 55,
-  },
-  countsDescriptionText: {
-    fontFamily: 'Poppins-Medium',
-    textAlign: 'center',
-    fontSize: fontSize[12],
-    marginTop: 6,
-  },
-  countsNumberText: {
-    fontFamily: 'Poppins-Bold',
-    textAlign: 'center',
-    fontSize: fontSize[25],
-    marginBottom: 3,
-  },
-  totalCountsNumberText: {
-    fontSize: fontSize[12],
-  },
-  bottomOrangeContainer: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: ORANGE,
-    marginTop: DEVICE_LARGE ? 17 : 15,
-    zIndex: 10,
-    flexGrow: 1,
-  },
-  connectContainer: {
-    flexDirection: 'column',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  newConnectionText: {
-    color: WHITE,
-    fontSize: fontSize[18],
-    fontFamily: 'Poppins-Medium',
-    marginBottom: DEVICE_LARGE ? 16 : 11,
-  },
-  connectButton: {
-    paddingTop: DEVICE_LARGE ? 11 : 7,
-    paddingBottom: DEVICE_LARGE ? 10 : 6,
-    width: DEVICE_LARGE ? '80%' : 260,
-    borderRadius: 60,
-    backgroundColor: WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 1,
-    marginBottom: DEVICE_LARGE ? 16 : 11,
-  },
-  connectText: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: fontSize[17],
-    color: BLACK,
-    marginLeft: DEVICE_LARGE ? 10 : 8,
-  },
-  communityIcon: {
-    marginTop: 1,
-    marginRight: 5,
-  },
-  communityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: DEVICE_LARGE ? 20 : 12,
-  },
-  communityLink: {
-    color: WHITE,
-    fontSize: fontSize[14],
-    fontFamily: 'Poppins-Bold',
-  },
-  infoContainer: {
-    position: 'absolute',
-    right: DEVICE_LARGE ? 12 : 7,
-    bottom: DEVICE_LARGE ? 12 : 7,
-    flexDirection: 'row',
-  },
-  nodeLinkContainer: {},
-  nodeLink: {
-    fontFamily: 'Poppins-Medium',
-    fontSize: fontSize[11],
-    color: WHITE,
-  },
-  orangeButton: {
-    height: 34,
-    marginTop: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 34,
-    backgroundColor: ORANGE,
-    width: '100%',
-  },
-  orangeButtonLabel: {
-    fontFamily: 'Poppins-Bold',
-    color: WHITE,
-    fontSize: fontSize[12],
-  },
+    joinMeetText: {
+      color: GRAY1,
+      fontFamily: 'Poppins-Medium',
+      fontSize: fontSize[14],
+      alignSelf: 'center'
+    },
+    wrapper: {
+      flex: 1,
+    },
+    animatedBG: {
+      // backgroundColor: 'LinearGradient(119deg, #1C1C1C 8.69%, rgba(28, 28, 28, 0.67) 62.63%)',
+      backgroundColor: GRAY10,
+      height: '25%',
+      // zIndex: -10,
+      // marginTop: 56
+    },
+    container: {
+      backgroundColor: GRAY1,
+      // backgroundColor: 'yellow',
+      flex: 1,
+      borderTopLeftRadius: 32,
+      borderTopRightRadius: 32,
+      marginTop: -32,
+      // justifyContent: 'center',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
+      paddingHorizontal: 20,
+      paddingTop: '24%'
+    },
+    backgroundCircle: {
+      backgroundColor: GRAY1,
+      borderRadius: 100,
+      height: 140,
+      width: 140,
+      position: 'absolute',
+      top: -60,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    photo: {
+      width: PHOTO_WIDTH,
+      height: PHOTO_WIDTH,
+      borderRadius: 100,
+      shadowColor: 'rgba(0, 0, 0, 0.5)',
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+    },
+    name: {
+      position:'absolute',
+      top: '16%',
+      color: GRAY9,
+      fontFamily: 'Poppins-Bold',
+      fontSize: fontSize[18],
+      fontWeight: '600',
+    },
+    countsWrapper: {
+      flexDirection: 'row', 
+      position: 'absolute', 
+      top: 14, 
+      justifyContent: 'space-between', 
+      width: '90%',
+      paddingRight: '5%'
+    },
+    countsContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      borderColor: 'red',
+    },
+    countsNumber: {
+      fontFamily: 'Poppins-Bold',
+      fontSize: fontSize[22],
+      color: GRAY9,
+    },
+    countsText: {
+      fontFamily: 'Poppins-Regular',
+      fontSize: fontSize[12],
+      color: GRAY8,
+    },
+    firstBtn: {
+      width: '100%',
+      borderColor: PRIMARY,
+      borderWidth: 1,
+      borderRadius: 16,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 14,
+      color: PRIMARY,
+    },
+    firstBtnTxt: {
+      fontFamily: 'Poppins-Bold',
+      fontSize: fontSize[16],
+      color: PRIMARY,
+      marginLeft: 12
+    },
+    secondBtn: {
+      backgroundColor: PRIMARY,
+      // flex: 1,
+      width: '48%',
+      aspectRatio: 1.5,
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      borderRadius: 16
+    },
+    secondBtnTxt: {
+      fontFamily: 'Poppins-Medium',
+      fontSize: fontSize[16],
+      color: WHITE,
+      fontWeight: '600',
+    },
+    horizontalGap: {
+      width: 20
+    },
+    verticalGap: {
+      height: 20
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center'
+    },
+    rowBetween: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%'
+    },
+    column: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%'
+    },
+    tripleBox: {
+      flex: 1,
+      aspectRatio: 1 / 1.25,
+      flexDirection: 'column',
+      backgroundColor: WHITE,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: GRAY2,
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      paddingTop: 12,
+      paddingBottom: 28
+    },
+    tripleBoxTextContainer:{
+      alignItems: 'center',
+    },
+    tripleBoxHeader: {
+      fontFamily: 'Poppins-Bold',
+      fontSize: fontSize[15],
+      color: GRAY9,
+    },
+    tripleBoxNormalText: {
+      fontFamily: 'Poppins-Light',
+      fontSize: fontSize[10],
+      color: GRAY7,
+      marginTop: -5
+    },
+    badgeContainer: {
+      borderRadius: 6,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderWidth: 1,
+      alignSelf: 'center',
+      // marginBottom: '25%',
+      // justifyContent: 'center',
+      // alignItems: 'center',
+    },
+    badgeText: {
+      fontFamily: 'Poppins-Medium',
+      fontSize: fontSize[12],
+    },
+    discordText: {
+      fontSize: fontSize[16],
+      color: GRAY8,
+      textDecorationLine: 'underline',
+      fontFamily: 'Poppins-Medium',
+      marginLeft: 12,
+    }
+
+
+
 });
 
 export default HomeScreen;

@@ -21,8 +21,6 @@ import {
   selectAllPendingConnections,
 } from '@/components/PendingConnections/pendingConnectionSlice';
 import { toggleDrawer, navigate } from '@/NavigationService';
-import { HomeDrawer } from './HomeDrawer';
-import { Stack } from './Navigator';
 import { fontSize } from '@/theme/fonts';
 
 /** SELECTORS */
@@ -42,7 +40,7 @@ const inviteSelector = createSelector(
 
 /** COMPONENTS */
 
-const NotificationBell = () => {
+export const NotificationBell = () => {
   const pendingConnections = useSelector(
     (state) => unconfirmedSelector(state)?.length,
   );
@@ -64,14 +62,14 @@ const NotificationBell = () => {
         navigate('Notifications');
       }}
     >
-      <Bell color={BLACK} alert={!!displayBadge} />
+      <Bell color={BLACK} alert={true} />
     </TouchableOpacity>
   );
 };
 
 /** OPTIONS */
 
-const BrightIdLogo = () => {
+export const BrightIdLogo = () => {
   return (
     // <TouchableWithoutFeedback
     //   onPress={() => {
@@ -85,63 +83,44 @@ const BrightIdLogo = () => {
   );
 };
 
+export const HdrLeft = () => {
+    return (
+        <TouchableOpacity
+          testID="toggleDrawer"
+          style={{
+            width: DEVICE_LARGE ? 80 : 70,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            Keyboard.dismiss();
+            toggleDrawer();
+            
+          }}
+        >
+          <Menu width={DEVICE_LARGE ? 30 : 24} />
+        </TouchableOpacity>
+      );
+}
+
 const homeScreenOptions: StackNavigationOptions = {
   headerTitle: () => <BrightIdLogo />,
-  headerLeft: () => {
-    return (
-      <TouchableOpacity
-        testID="toggleDrawer"
-        style={{
-          width: DEVICE_LARGE ? 80 : 70,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        onPress={() => {
-          Keyboard.dismiss();
-          toggleDrawer();
-          
-        }}
-      >
-        <Menu width={DEVICE_LARGE ? 30 : 24} />
-      </TouchableOpacity>
-    );
-  },
+  headerLeft: () => <HdrLeft />,
   headerRight: () => <NotificationBell />,
   headerStyle: {
     // height: DEVICE_LARGE ? 80 : 70,
     height: 52,
     shadowRadius: 0,
     elevation: -1,
-    zIndex: 0,
+    zIndex: 0
   },
   headerBackgroundContainerStyle:{
     backgroundColor: GRAY1,
-    // zIndex: 0,
-    // elevation: -1
+    zIndex: 0,
+    elevation: -1
   },
   headerTitleAlign: 'center',
-  headerTintColor: 'transparent',
-  headerTransparent: true,
-  // headerShown: false
-  
+  // headerTintColor: 'transparent',
+  // headerTransparent: true,
   
 };
-
-/** SCREENS */
-
-const Home = () => {
-  /* /!\ Moved 'RecoveringConnection' options to the component in order to access to useTranslation() */
-  // const { t } = useTranslation();
-  return (
-    <>
-      <Stack.Screen
-        name="Home"
-        component={HomeDrawer}
-        options={homeScreenOptions}
-        
-      />
-    </>
-  );
-};
-
-export default Home;
