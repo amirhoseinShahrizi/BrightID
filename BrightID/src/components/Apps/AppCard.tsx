@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { DEVICE_LARGE } from '@/utils/deviceConstants';
 import { fontSize } from '@/theme/fonts';
-import { WHITE, DARKER_GREY, BLUE, ORANGE, YELLOW } from '@/theme/colors';
+import { WHITE, DARKER_GREY, BLUE, ORANGE, YELLOW, GRAY7, GRAY9, LIGHT_SUCCESS, SUCCESS } from '@/theme/colors';
 import {
   updateLinkedContext,
   selectLinkedContext,
@@ -23,6 +23,7 @@ import {
 import { isVerified } from '@/utils/verifications';
 import Check from '../Icons/Check';
 import { useDispatch, useSelector } from '@/store/hooks';
+import UpRightArrow from '../Icons/UpRightArrow';
 
 /**
  * App Card in the Apps Screen
@@ -56,42 +57,6 @@ const AppCard = (props: AppInfo) => {
     linkedContextSelector(state, context),
   );
 
-  const appColorTheme = useMemo(() => {
-    switch (name) {
-      case 'Gitcoin':
-        return '#8F37FF';
-      case '1Hive':
-        return '#FFD037';
-      case 'RabbitHole':
-        return '#0FCE7C';
-      case 'IDChain':
-        return '#2C227E';
-      case 'Rare Coin Claims':
-        return '#1DA1F2';
-      case 'MultiverseDAO':
-        return '#F21DDD';
-      case 'clr.fund':
-        return '#261A4B';
-      case 'Burn Signal':
-        return '#ED411B';
-      case 'The Ether':
-        return '#7CE0D6';
-      case 'Top-up Gifter':
-        return '#F38621';
-      case 'Discord Unique Bot':
-        return '#9EA1E0';
-      case 'Snapshot':
-        return '#FFAF37';
-      case '13Votes':
-        return '#B337FF';
-      case '$Bright':
-        return '#FFC918';
-      case 'Lumos':
-        return '#FFD337';
-      default:
-        return '';
-    }
-  }, [name]);
   const selectLinkedSigs = useMemo(
     () => createSelectLinkedSigsForApp(id),
     [id],
@@ -229,38 +194,45 @@ const AppCard = (props: AppInfo) => {
   };
 
   const LinkedSticker = () => {
-    if (usingBlindSig) {
-      // show x/y linked sigs
-      return linkedSigs.length > 0 ? (
-        <View style={styles.linkedContainer} testID={`Linked_${id}`}>
-          <View style={styles.linkedSticker}>
-            <Check
-              width={fontSize[11]}
-              height={fontSize[11]}
-              strokeWidth={3}
-              color={WHITE}
-            />
-          </View>
-          <Text
-            style={styles.linkedText}
-          >{`Linked (${linkedSigs.length}/${appVerifications.length})`}</Text>
-        </View>
-      ) : null;
-    } else {
-      return isLinked ? (
-        <View style={styles.linkedContainer} testID={`Linked_${id}`}>
-          <View style={styles.linkedSticker}>
-            <Check
-              width={fontSize[11]}
-              height={fontSize[11]}
-              strokeWidth={3}
-              color={WHITE}
-            />
-          </View>
-          <Text style={styles.linkedText}>Linked</Text>
-        </View>
-      ) : null;
-    }
+    // if (usingBlindSig) {
+    //   // show x/y linked sigs
+    //   return linkedSigs.length > 0 ? (
+    //     <View style={styles.linkedContainer} testID={`Linked_${id}`}>
+    //       <View style={styles.linkedSticker}>
+    //         <Check
+    //           width={fontSize[11]}
+    //           height={fontSize[11]}
+    //           strokeWidth={3}
+    //           color={WHITE}
+    //         />
+    //       </View>
+    //       <Text
+    //         style={styles.linkedText}
+    //       >{`Linked (${linkedSigs.length}/${appVerifications.length})`}</Text>
+    //     </View>
+    //   ) : null;
+    // } else {
+    //   return isLinked ? (
+    //     <View style={styles.linkedContainer} testID={`Linked_${id}`}>
+    //       <View style={styles.linkedSticker}>
+    //         <Check
+    //           width={fontSize[11]}
+    //           height={fontSize[11]}
+    //           strokeWidth={3}
+    //           color={WHITE}
+    //         />
+    //       </View>
+    //       <Text style={styles.linkedText}>Linked</Text>
+    //     </View>
+    //   ) : null;
+    // }
+    return isLinked ? (
+      <View style={styles.linkedBadgeContainer} testID={`Linked_${id}`}>
+        
+        <Text style={styles.linkedBadgeText}>Linked</Text>
+      </View>
+    ) : null;
+
   };
 
   // If app is testing and user is not linked, do not display card
@@ -271,42 +243,68 @@ const AppCard = (props: AppInfo) => {
   return (
     <TouchableOpacity
       style={[
-        styles.container,
-        styles.shadow,
-        { opacity: notSponsored ? 0.5 : 1 },
+        styles.container
       ]}
       testID={`app-${id}`}
       onPress={openApp}
     >
-      <View
-        style={[styles.logoBackground, { backgroundColor: appColorTheme }]}
-      />
-      <View style={[styles.logoContainer, !notSponsored && styles.shadow]}>
         <Image
           source={{
             uri: logo !== '' ? logo : null,
           }}
           style={styles.logo}
         />
+      {/* <View style={[styles.logoContainer, !notSponsored && styles.shadow]}>
+      </View> */}
+
+      <View>
+        <Text style={styles.label}>{name}</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.normalText}>learn more</Text>
+          <UpRightArrow />
+        </View>
       </View>
 
-      <Text style={styles.label}>{name}</Text>
+      
 
-      <View style={styles.divider}>
-        <LinkedSticker />
-      </View>
+      <LinkedSticker />
+      {/* <View style={styles.divider}>
+      </View> */}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  linkedBadgeText: {
+    fontSize: fontSize[10],
+    fontFamily: 'Poppins-Medium',
+    color: SUCCESS,
+  },
+  linkedBadgeContainer: {
+    backgroundColor: LIGHT_SUCCESS,
+    borderWidth: 1,
+    borderColor: SUCCESS,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    textAlign: 'center',
+    position: 'absolute',
+    right: 0,
+    marginRight: 8
+  },
+  normalText: {
+    color: GRAY7,
+    fontSize: fontSize[12],
+    fontFamily: 'Poppins-Regular'
+  },
   container: {
-    width: '45%',
-    aspectRatio: 1,
+    width: '100%',
+    // aspectRatio: 1,
     alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: WHITE,
-    paddingTop: 20,
+    // borderRadius: 10,
+    // backgroundColor: WHITE,
+    // paddingTop: 20,
+    flexDirection: 'row'
   },
   shadow: {
     ...Platform.select({
@@ -335,14 +333,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logo: {
-    height: 35,
+    height: 48,
     aspectRatio: 1,
     resizeMode: 'contain',
+    borderRadius: 4,
+    marginRight: 16
   },
   label: {
-    marginTop: 10,
+    // marginTop: 10,
     fontFamily: 'Poppins-Medium',
-    fontSize: 12,
+    fontSize: fontSize[16],
+    color: GRAY9
   },
   divider: {
     flex: 1,
@@ -432,7 +433,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 5.5,
+    // marginTop: 5.5,
   },
 });
 

@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { ORANGE, WHITE } from '@/theme/colors';
+import { GRAY1, GRAY2, GRAY4, GRAY9, ORANGE, WHITE } from '@/theme/colors';
+import SearchIcon from '../Icons/connectionPage/SearchIcon';
+import { fontSize } from '@/theme/fonts';
 
 type Props = {
   searchTerm: string;
@@ -39,28 +41,18 @@ const AppsScreenFilter = ({
 
   return (
     <>
-      <Animated.View
-        style={[
-          styles.searchBackground,
-          { top: headerHeight, opacity: fadeBackgroundSearch },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.searchContainer,
-          {
-            top: headerHeight + 10,
-            transform: [{ translateY: translateYSearch }],
-          },
-        ]}
-      >
-        <TextInput
-          style={[styles.shadow, styles.textInput]}
-          onChangeText={(value) => setSearchTerm(value)}
-          placeholder="App name"
-          value={searchTerm}
-          // onFocus={handleSearchFocus}
-        />
+      <View style={styles.searchContainer}>
+
+        <View style={styles.searchIconContainer}>
+          <SearchIcon />
+          <TextInput
+            style={styles.searchText}
+            onChangeText={(value) => setSearchTerm(value)}
+            placeholder="Search name of app..."
+            value={searchTerm}
+            // onFocus={handleSearchFocus}
+          />
+        </View>
 
         <View style={styles.filterContainer}>
           {filters.map((item, index) => (
@@ -69,7 +61,7 @@ const AppsScreenFilter = ({
               key={item.id}
               style={[
                 styles.filterItemContainer,
-                { backgroundColor: index === filter ? ORANGE : WHITE },
+                { backgroundColor: index === filter ? GRAY1 : 'transparent' },
               ]}
               onPress={() => setFilter(index)}
             >
@@ -77,7 +69,7 @@ const AppsScreenFilter = ({
                 style={{
                   fontFamily: 'Poppins-Medium',
                   fontSize: 12,
-                  color: index === filter ? WHITE : ORANGE,
+                  color: GRAY9,
                 }}
               >
                 {item.name}
@@ -85,23 +77,36 @@ const AppsScreenFilter = ({
             </TouchableOpacity>
           ))}
         </View>
-      </Animated.View>
+      </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  searchContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignSelf: 'center',
-    alignItems: 'center',
+  searchText: {
+    // textAlign: 'center',
+    color: GRAY9,
+    fontFamily: 'Poppins-Regular',
+    fontSize: fontSize[14],
+    fontWeight: '400',
+    marginLeft: 16,
+    width: '90%'
+  },
+  searchIconContainer: {
+    height: 52,
+    paddingHorizontal: 20,
+    borderRadius: 16,
     width: '100%',
-    height: 100,
-    zIndex: 6,
-    // marginTop: 40,
-    overflow: 'visible',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: GRAY4,
+  },
+  searchContainer: {
+    width: '100%',
+    marginBottom: 24
   },
   searchBackground: {
     position: 'absolute',
@@ -111,16 +116,17 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   filterContainer: {
-    width: '90%',
+    width: '100%',
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 16,
+    justifyContent: 'space-between',
+    backgroundColor: GRAY2,
+    padding: 4,
+    borderRadius: 10
   },
   filterItemContainer: {
-    borderWidth: 1,
-    borderColor: ORANGE,
-    padding: 5,
-    borderRadius: 5,
-    marginRight: 5,
+    padding: 10,
+    borderRadius: 10,
   },
   textInput: {
     backgroundColor: 'white',

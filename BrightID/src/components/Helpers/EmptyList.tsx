@@ -23,12 +23,11 @@ const EmptyList = ({ title, iconType = 'alert-outline' }: Props) => (
 
 const styles = StyleSheet.create({
   emptyContainer: {
+    marginTop: '55%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: GRAY1,
-    height: '100%',
-    width: '100%',
   },
   emptyText: {
     fontFamily: 'ApexNew-Medium',

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,16 +7,22 @@ import {
   Animated,
   Platform,
   Easing,
+  FlatList,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useFocusEffect } from '@react-navigation/native';
 import EmptyList from '@/components/Helpers/EmptyList';
-import { WHITE } from '@/theme/colors';
+import { GRAY1, GRAY2, GRAY3, GRAY4, WHITE } from '@/theme/colors';
 import { fontSize } from '@/theme/fonts';
 import AppCard from './AppCard';
 import AnimatedLinearGradient from './AnimatedLinearGradient';
 import AppsScreenFilter from '@/components/Apps/AppsScreenFilter';
+import SearchBarRedesigned from '../Helpers/SearchBarRedesigned';
+import Info from '../Icons/NewInfoIcon';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { InformationModal } from './modals/InformationModal';
+import { DEVICE_LARGE } from '@/utils/deviceConstants';
 
 type Props = {
   isSponsored: boolean;
@@ -160,19 +166,30 @@ export const AppsScreen = ({
     );
   };
 
+  const [info, setInfo] = useState(false)
+  
   return (
     <>
       <View style={styles.container} testID="appsScreen">
-        <AnimatedLinearGradient
+        {/* <Text>hello mother father</Text>
+        <SearchBarRedesigned setSearchValue={setConnectionsSearch}/>
+        */}
+        {/* <AnimatedLinearGradient
           containerStyle={[
             styles.headerTitleContainer,
             { height: headerHeight, opacity: fadeBackgroundSearch },
           ]}
           colors={['#3E4481', '#999ECD']}
-        />
+        /> */}
 
-        <OverallDescription />
+        {/* <OverallDescription /> */}
+        
+        {/* <TouchableOpacity onPress={() => setInfo(true)}>
+          <Info />
+        </TouchableOpacity> */}
 
+        {info && <InformationModal informationModal={info} setInformationModal={setInfo} totalApps={totalApps} LinkedApps={linkedContextsCount}/>}
+        
         <AppsScreenFilter
           filter={activeFilter}
           searchTerm={searchTerm}
@@ -181,23 +198,33 @@ export const AppsScreen = ({
           fadeBackgroundSearch={fadeBackgroundSearch}
           translateYSearch={translateYSearch}
         />
-
-        <Animated.FlatList
+        
+        {/* <FlatList
+          style={styles.socialMediaVariations}
+          columnWrapperStyle={styles.socialMediaVariationsColumn}
+          data={filteredApps}
+          numColumns={5}
+          renderItem={renderSocialMediaVariation}
+          keyExtractor={socialMediaVariationsKeyExtractor}
+        /> */}
+        
+        <FlatList
+          style={{width: '100%'}}
           ref={(ref) => (scrollViewRef.current = ref)}
           testID="appsList"
           data={filteredApps}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          numColumns={2}
-          columnWrapperStyle={styles.wrapperColumn}
+          // onScroll={handleScroll}
+          // scrollEventThrottle={16}
+          numColumns={1}
+          // columnWrapperStyle={styles.wrapperColumn}
           contentContainerStyle={[
             styles.contentContainer,
             // @ts-ignore notifHeight._value
-            { marginTop: headerHeight + 190 + notifHeight._value },
+            // { marginTop: headerHeight + 190 + notifHeight._value },
           ]}
           keyExtractor={({ name }, index) => name + index}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
+          // showsHorizontalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <AppCard {...item} />}
           ListEmptyComponent={
             <EmptyList title={t('apps.text.noApps')} iconType="flask" />
@@ -205,15 +232,34 @@ export const AppsScreen = ({
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={refreshApps} />
           }
+          ItemSeparatorComponent={ItemSeparator}
         />
+        
       </View>
     </>
+  );
+};
+
+const ItemSeparator = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: GRAY2,
+        marginVertical: 16
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: GRAY1,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    // justifyContent: 'center'
   },
   shadow: {
     ...Platform.select({
@@ -298,12 +344,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   contentContainer: {
-    paddingTop: 100,
-    paddingBottom: 500,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    // paddingTop: 100,
+    // width: '100%',
+    // paddingBottom: 500,
+    width: '100%',
+    // backgroundColor: 'green',
   },
 });
 
