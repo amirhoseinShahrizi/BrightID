@@ -188,7 +188,7 @@ export const AppsScreen = ({
           <Info />
         </TouchableOpacity> */}
 
-        {info && <InformationModal informationModal={info} setInformationModal={setInfo} totalApps={totalApps} LinkedApps={linkedContextsCount}/>}
+        {/* {info && <InformationModal informationModal={info} setInformationModal={setInfo} totalApps={totalApps} LinkedApps={linkedContextsCount}/>} */}
         
         <AppsScreenFilter
           filter={activeFilter}
@@ -348,6 +348,7 @@ const styles = StyleSheet.create({
     // width: '100%',
     // paddingBottom: 500,
     width: '100%',
+    flexGrow: 1
     // backgroundColor: 'green',
   },
 });

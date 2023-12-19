@@ -23,7 +23,7 @@ const EmptyList = ({ title, iconType = 'alert-outline' }: Props) => (
 
 const styles = StyleSheet.create({
   emptyContainer: {
-    marginTop: '55%',
+    // marginTop: '55%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,23 +1,37 @@
 import React from 'react';
-import { GRAY1, GRAY10, GRAY2, GRAY9 } from "@/theme/colors";
+import { BLACK, GRAY1, GRAY10, GRAY2, GRAY9 } from "@/theme/colors";
 import { fontSize } from "@/theme/fonts";
 import {  Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import Close from '@/components/Icons/Close';
+import { useNavigation } from '@react-navigation/native';
+import { BlurView } from '@react-native-community/blur';
 
 
-export const InformationModal = ({informationModal, setInformationModal, totalApps, LinkedApps}) => {
+// export const InformationModal = ({informationModal, setInformationModal, totalApps, LinkedApps}) => {
+export const InformationModal = () => {
 
+    const navigation = useNavigation();
 
     const handleModalCloseByCancel = () => {
-      setInformationModal(false);
+      // setInformationModal(false);
+      navigation.goBack();
     }
 
     return <>
-    {informationModal && <View style={styles.closingModalView}/>}
-    <Modal  animationType='slide' visible={informationModal} transparent={true} onRequestClose={() => handleModalCloseByCancel()}>
+    {/* { <View style={styles.closingModalView}/>} */}
+    <View  style={styles.container}>
         {/* <TouchableOpacity style={styles.closingModal} onPress={() => {handleModalRequestClose()}} /> */}
-        <TouchableWithoutFeedback onPress={() => {handleModalCloseByCancel()}}>
-            <View style={styles.closingModal}/>
+        {/* <TouchableWithoutFeedback onPress={handleModalCloseByCancel}>
+            <View style={styles.blurView}/>
+        </TouchableWithoutFeedback> */}
+        <BlurView
+          style={styles.blurView}
+          blurType="dark"
+          blurAmount={5}
+          reducedTransparencyFallbackColor={BLACK}
+        />
+        <TouchableWithoutFeedback onPress={handleModalCloseByCancel}>
+          <View style={styles.blurView} />
         </TouchableWithoutFeedback>
 
         <View style={styles.modalCenteredView}>
@@ -38,7 +52,7 @@ export const InformationModal = ({informationModal, setInformationModal, totalAp
                     Total Apps
                   </Text>
                   <Text style={styles.BoldText}>
-                    {totalApps}
+                    {19}
                   </Text>
                 </View>
 
@@ -49,19 +63,25 @@ export const InformationModal = ({informationModal, setInformationModal, totalAp
                     You're Linked to
                   </Text>
                   <Text style={styles.BoldText}>
-                    {LinkedApps}
+                    {0}
                   </Text>
                 </View>
 
               </View>
           </View>
         </View>
-    </Modal>
+    </View>
   </>
 
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
     appsContainer: {
       flex: 1,
       backgroundColor: GRAY2,
@@ -124,8 +144,12 @@ const styles = StyleSheet.create({
         bottom: 0,
         zIndex: 1001,
       },
-      closingModal: {
-        flex: 1,
+      blurView: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
       },
       modalCenteredView: {
         flex: 1,

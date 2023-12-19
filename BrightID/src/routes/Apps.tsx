@@ -7,12 +7,17 @@ import { Stack } from './Navigator';
 import { GRAY1, GRAY10 } from '@/theme/colors';
 import Info from '@/components/Icons/NewInfoIcon';
 import { TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 
 const headerRightIcon = () => {
 
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  
   return <>
-    <TouchableOpacity style={{paddingRight: 20}}>
+    <TouchableOpacity onPress={() => navigation.navigate('AppsInfoModal')} style={{paddingRight: 20}}>
       <Info />
     </TouchableOpacity>
   </>

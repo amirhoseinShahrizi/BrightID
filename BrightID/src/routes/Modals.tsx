@@ -14,6 +14,7 @@ import ViewPassword from '@/components/Onboarding/Walkthroughs/ViewPassword';
 import RecoveryCooldownInfoModal from '@/components/Recovery/RecoveryCooldownInfoModal';
 import NodeModal from '@/components/Helpers/NodeModal';
 import { Stack } from './Navigator';
+import { InformationModal } from '@/components/Apps/modals/InformationModal';
 
 export const modalOptions: StackNavigationOptions = {
   headerShown: false,
@@ -73,6 +74,13 @@ const Modals = () => {
         options={modalOptions}
         component={NodeModal}
       />
+      <Stack.Screen
+        name="AppsInfoModal"
+        options={modalOptions}
+        component={InformationModal}
+      />
+
+      
     </>
   );
 };
